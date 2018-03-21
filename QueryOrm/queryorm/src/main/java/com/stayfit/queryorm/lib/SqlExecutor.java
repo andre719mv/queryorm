@@ -46,4 +46,8 @@ public class SqlExecutor {
 	public void insert(String table, String nullColumnHack, ISQLiteContentValues values) {
 		db.insert(table, nullColumnHack, values);
 	}
+
+	public ISQLiteContentValues newContentValues(){
+		return db.newContentValues();
+	}
 }
