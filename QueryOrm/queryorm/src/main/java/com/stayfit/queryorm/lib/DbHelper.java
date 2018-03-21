@@ -16,7 +16,7 @@ import java.lang.reflect.Modifier;
 public class DbHelper {
     private static ISQLiteDatabaseHelper instance;
 
-    public static <T extends ISQLiteDatabaseHelper> void setHelperClass(ISQLiteDatabaseHelper helper) {
+    public static <T extends ISQLiteDatabaseHelper> void setHelper(ISQLiteDatabaseHelper helper) {
         instance = helper;
     }
 
