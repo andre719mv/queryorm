@@ -3,10 +3,12 @@ package com.stayfit.sample;
 import android.app.Application;
 import android.content.Context;
 
-import com.stayfit.queryorm.lib.CommonFields;
 import com.stayfit.queryorm.lib.DOBase;
 import com.stayfit.queryorm.lib.DbHelper;
 import com.stayfit.queryorm.lib.QueryParms;
+import com.stayfit.sample.dal.AppDb;
+import com.stayfit.sample.dal.DbCoumns;
+import com.stayfit.sample.dal.entities.PersonEntity;
 
 public class MyApplication extends Application {
     public static Context AppContext;
@@ -22,7 +24,7 @@ public class MyApplication extends Application {
         DbHelper.getHelper().getWritableDatabase();
 
         PersonEntity entity = new PersonEntity();
-        entity.name = "JohnDoe";
+        entity.name = "John Doe";
         entity.save();
 
         //now entity have id
@@ -30,7 +32,7 @@ public class MyApplication extends Application {
         entity = DOBase.selectById(PersonEntity.class, entity._id);
         //or
         QueryParms param = new QueryParms(PersonEntity.class)
-                .addCriteria("person", CommonFields.Id);
+                .addCriteria(DbCoumns.Person.Name, "John Doe");
         entity = DOBase.selectSingle(PersonEntity.class, param);
     }
 }
