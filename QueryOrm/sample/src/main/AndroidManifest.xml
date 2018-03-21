@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 
-    package="com.stayfit.orm.app">
+    package="com.stayfit.orm.sample">
 
     <application
         android:allowBackup="true"

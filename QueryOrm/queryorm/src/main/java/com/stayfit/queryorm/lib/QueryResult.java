@@ -4,16 +4,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.database.Cursor;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteCursor;
 
 public class QueryResult {
-	public QueryResult(Cursor cursor, Class entityType) {
+	public QueryResult(ISQLiteCursor cursor, Class entityType) {
 		this.cursor = cursor;
 		this.entityType = entityType;
 		cursor.moveToFirst();
 	}
 
-	Cursor cursor;
+	ISQLiteCursor cursor;
 	Class entityType;
 
 	public int getCount() {

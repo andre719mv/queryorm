@@ -1,1 +1,1 @@
-include ':app', ':queryorm'
+include ':sample', ':queryorm'

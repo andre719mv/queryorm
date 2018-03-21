@@ -4,10 +4,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class SqlExecutor {
-	private SQLiteDatabase db;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteContentValues;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteCursor;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
 
-	public SqlExecutor(SQLiteDatabase db){
+public class SqlExecutor {
+	private ISQLiteDatabase db;
+
+	public SqlExecutor(ISQLiteDatabase db){
 		this.db = db;
 	}
 	public SqlExecutor(){
@@ -15,22 +19,22 @@ public class SqlExecutor {
 	}
 	public QueryResult executeSelect(QueryParms queryParms){
 		SmartSqlQuery query = QueryBuilder.buildSql(queryParms);
-		Cursor cursor = db.rawQuery(query.getSql(), query.getArgs());
+		ISQLiteCursor cursor = db.rawQuery(query.getSql(), query.getArgs());
 		return new QueryResult(cursor,queryParms.getEntityType());
 	}
 
 	public <T> QueryResult executeSelect(Class<T> cl, String sql){
-		Cursor cursor = db.rawQuery(sql, null);
+		ISQLiteCursor cursor = db.rawQuery(sql, null);
 		return new QueryResult(cursor, cl);
 	}
 	
-	public Cursor rawQuery(String sql){
+	public ISQLiteCursor rawQuery(String sql){
 		return db.rawQuery(sql, null);
 	}
 
 	public int delete(QueryParms queryParms){
 		SmartSqlQuery query = QueryBuilder.builDeleteSql(queryParms);
-		Cursor cursor = db.rawQuery(query.getSql(), query.getArgs());
+		ISQLiteCursor cursor = db.rawQuery(query.getSql(), query.getArgs());
 		cursor.moveToFirst();
 		int rowsAffected = 0;
 		if(cursor.getCount()> 0)
@@ -39,7 +43,7 @@ public class SqlExecutor {
 		return rowsAffected;
 	}
 
-	public void insert(String table, String nullColumnHack, ContentValues values) {
+	public void insert(String table, String nullColumnHack, ISQLiteContentValues values) {
 		db.insert(table, nullColumnHack, values);
 	}
 }

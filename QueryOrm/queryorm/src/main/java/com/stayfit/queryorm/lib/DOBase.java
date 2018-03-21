@@ -1,17 +1,15 @@
 package com.stayfit.queryorm.lib;
 
+import com.annimon.stream.Stream;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteContentValues;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteCursor;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
+
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.annimon.stream.Stream;
-import com.google.firebase.crash.FirebaseCrash;
 
 public class DOBase {
 	public long _id = -1;
@@ -19,7 +17,7 @@ public class DOBase {
 	protected DOBase() {
 	}
 
-	protected DOBase(Cursor cursor) {
+	protected DOBase(ISQLiteCursor cursor) {
 		Map<String, String> mapppedColumns = new HashMap<>();
 		Class c = this.getClass();
 		for(Field f : c.getFields()){
@@ -60,7 +58,7 @@ public class DOBase {
 				}
 			} catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException e) {
 				e.printStackTrace();
-				FirebaseCrash.report(e);
+				//FirebaseCrash.report(e);
 			}
 		}
 	}
@@ -135,11 +133,11 @@ public class DOBase {
 
 	public Long save() { return save(DbHelper.getHelper().getWritableDatabase(), true); }
 
-	public Long save(SQLiteDatabase db, boolean closeConnection) {
+	public Long save(ISQLiteDatabase db, boolean closeConnection) {
 		Class c = this.getClass();
 		String tableName = getTableName();
 
-		ContentValues newValues = new ContentValues();
+		ISQLiteContentValues newValues = db.newContentValues();
 
 		try {
 			for (Field f : c.getFields()) {
@@ -168,7 +166,7 @@ public class DOBase {
 			}
 		} catch (IllegalAccessException | IllegalArgumentException e) {
 			e.printStackTrace();
-			FirebaseCrash.report(e);
+			//FirebaseCrash.report(e);
 		}
 
 		if (_id >= 0) {
@@ -203,7 +201,7 @@ public class DOBase {
 			}
 		} catch (IllegalAccessException | IllegalArgumentException e) {
 			e.printStackTrace();
-			FirebaseCrash.report(e);
+			//FirebaseCrash.report(e);
 		}
 
 		deleteForever();
@@ -213,7 +211,7 @@ public class DOBase {
 		if (_id < 0)
 			return;
 
-		SQLiteDatabase db = DbHelper.getHelper().getWritableDatabase();
+		ISQLiteDatabase db = DbHelper.getHelper().getWritableDatabase();
 		String tableName = getTableName();
 		String[] whereArgs = new String[]{String.valueOf(_id)};
 		db.delete(tableName, CommonFields.Id + " = ?", whereArgs);
