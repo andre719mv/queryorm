@@ -1,22 +1,15 @@
 package com.stayfit.sample.dal;
-
 import android.content.Context;
 
 import com.stayfit.queryorm.lib.android.AndroidSQLiteDatabaseHelper;
 import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
-import com.stayfit.sample.MyApplication;
 
 public class AppDb extends AndroidSQLiteDatabaseHelper {
     private static final int DB_VERSION = 2;
     private static final String DB_NAME = "database.db";
 
-    private Context mContext;
-
-    //Required private ctor. Used in DbHelper from orm
-    private AppDb() {
-        //Some static context. For example: MyApplication.AppContext
-        super(MyApplication.AppContext, DB_NAME, DB_VERSION);
-        mContext = MyApplication.AppContext;
+    public AppDb(Context context) {
+        super(context, DB_NAME, DB_VERSION);
     }
 
     @Override

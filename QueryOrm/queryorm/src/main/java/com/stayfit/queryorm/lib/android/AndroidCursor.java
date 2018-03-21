@@ -74,8 +74,8 @@ public class AndroidCursor implements ISQLiteCursor {
 	}
 
 	@Override
-	public void moveToNext() {
-		cursor.moveToNext();
+	public boolean moveToNext() {
+		return cursor.moveToNext();
 	}
 
 	@Override

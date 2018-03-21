@@ -58,8 +58,8 @@ public class QueryResult {
 		return items;
 	}
 
-	public void moveToNext() {
-		cursor.moveToNext();
+	public boolean moveToNext() {
+		return cursor.moveToNext();
 	}
 
 	public void moveToLast() {

@@ -43,7 +43,7 @@ public interface ISQLiteCursor {
 
 	long getLong(int i);
 
-	void moveToNext();
+	boolean moveToNext();
 
 	double getDouble(int i);
 

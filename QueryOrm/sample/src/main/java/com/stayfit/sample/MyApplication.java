@@ -17,7 +17,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         AppContext = this;
-        DbHelper.setHelperClass(AppDb.class);
+        DbHelper.setHelperClass(new AppDb(AppContext));
 
         //This is first call to DB in usual app start. So in most cases DB create or upgrade happens here. Move this call to first activity and display splash screen to make heavy work in background.
         //Also db init can happen from services or if app started with another activity. We do not care about those cases.

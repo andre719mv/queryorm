@@ -14,35 +14,15 @@ import java.lang.reflect.Modifier;
  */
 
 public class DbHelper {
-    private static Class dbHelperClass;
     private static ISQLiteDatabaseHelper instance;
 
-    public static <T extends ISQLiteDatabaseHelper> void setHelperClass(Class<T> helperClass) {
-        if(dbHelperClass != null)
-            throw new RuntimeException("db helper class already set");
-
-        dbHelperClass = helperClass;
+    public static <T extends ISQLiteDatabaseHelper> void setHelperClass(ISQLiteDatabaseHelper helper) {
+        instance = helper;
     }
 
     public static synchronized ISQLiteDatabaseHelper getHelper() {
-        if (instance == null) {
-            if(dbHelperClass == null)
-                throw new RuntimeException("db helper class is not set up");
-
-            try {
-                Constructor<?> constructor  = dbHelperClass.getDeclaredConstructors()[0];
-                if(Modifier.isPrivate(constructor.getModifiers()))
-                    constructor.setAccessible(true);
-
-                instance = (ISQLiteDatabaseHelper)constructor.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("Bad db helper class present. Instanitiation failed");
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("Bad db helper class present. Instanitiation failed");
-            } catch (InvocationTargetException e) {
-                throw new IllegalArgumentException("Bad db helper class present. Instanitiation failed");
-            }
-        }
+        if(instance == null)
+            throw new RuntimeException("db helper class is not set up");
 
         return instance;
     }

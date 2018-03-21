@@ -40,8 +40,6 @@ import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabaseHelper;
 import java.io.InputStream;
 
 public abstract class AndroidSQLiteDatabaseHelper implements ISQLiteDatabaseHelper {
-
-	AndroidSQLiteDatabase db;
 	
 	private class DBOpenHelper extends SQLiteOpenHelper {
 
@@ -51,40 +49,54 @@ public abstract class AndroidSQLiteDatabaseHelper implements ISQLiteDatabaseHelp
 
 		@Override
 		public void onCreate(SQLiteDatabase sqlDb) {
-			if (db == null) {
-				db = new AndroidSQLiteDatabase(sqlDb);
+			if (_db == null) {
+				_db = new AndroidSQLiteDatabase(sqlDb);
 			}
 
-			AndroidSQLiteDatabaseHelper.this.onCreate(db);
+			AndroidSQLiteDatabaseHelper.this.onCreate(_db);
 		}
 
 		@Override
 		public void onUpgrade(SQLiteDatabase sqlDb, int oldVersion, int newVersion) {
-			if (db == null) {
-				db = new AndroidSQLiteDatabase(sqlDb);
+			if (_db == null) {
+				_db = new AndroidSQLiteDatabase(sqlDb);
 			}
-			AndroidSQLiteDatabaseHelper.this.onUpgrade(db, oldVersion, newVersion);
+			AndroidSQLiteDatabaseHelper.this.onUpgrade(_db, oldVersion, newVersion);
 		}
 	}
-	
-	DBOpenHelper dbH;
+
+	private AndroidSQLiteDatabase _db;
+	private DBOpenHelper _dbH;
+	private Context _ctx;
+	private String _dbName;
+	private int _version;
 	
 	public AndroidSQLiteDatabaseHelper(Context ctx, String dbName, int version) {
-		dbH = new DBOpenHelper(ctx, dbName, null, version);
+		_ctx = ctx;
+		_dbName = dbName;
+		_version = version;
+	}
+
+	//Lazy helper init
+	private synchronized DBOpenHelper getDbHelper(){
+		if(_dbH == null){
+			_dbH = new DBOpenHelper(_ctx, _dbName, null, _version);
+		}
+		return _dbH;
 	}
 
 	@Override
 	public void close() {
-		dbH.close();
-		db = null;
+		getDbHelper().close();
+		_db = null;
 	}
 
 	@Override
 	public ISQLiteDatabase getWritableDatabase() {
-		if (db == null) {
-			db = new AndroidSQLiteDatabase(dbH.getWritableDatabase());
+		if (_db == null) {
+			_db = new AndroidSQLiteDatabase(getDbHelper().getWritableDatabase());
 		}
-		return db;
+		return _db;
 	}
 
 	@Override
