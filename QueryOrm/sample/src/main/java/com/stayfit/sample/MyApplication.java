@@ -2,6 +2,7 @@ package com.stayfit.sample;
 
 import android.app.Application;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.stayfit.queryorm.lib.DOBase;
 import com.stayfit.queryorm.lib.DbHelper;

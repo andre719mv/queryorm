@@ -27,4 +27,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':queryorm')
     implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.github.andre719mv:queryorm-base:1.0'
 }
