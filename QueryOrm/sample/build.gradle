@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.stayfit.sample"
         minSdkVersion 15
@@ -27,5 +27,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':queryorm')
     implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.github.andre719mv:queryorm-base:1.0'
+    implementation 'com.github.andre719mv:queryorm-base:1.0.1'
+    //implementation 'com.github.andre719mv:queryorm-base:master-SNAPSHOT'
 }
+
+/*
+ * to refresh snapshot
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}*/

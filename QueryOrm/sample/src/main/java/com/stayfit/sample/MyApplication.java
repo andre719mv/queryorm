@@ -3,6 +3,7 @@ package com.stayfit.sample;
 import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.stayfit.queryorm.lib.DOBase;
 import com.stayfit.queryorm.lib.DbHelper;
@@ -10,6 +11,8 @@ import com.stayfit.queryorm.lib.QueryParms;
 import com.stayfit.sample.dal.AppDb;
 import com.stayfit.sample.dal.DbCoumns;
 import com.stayfit.sample.dal.entities.PersonEntity;
+
+import java.util.List;
 
 public class MyApplication extends Application {
     public static Context AppContext;
@@ -35,5 +38,35 @@ public class MyApplication extends Application {
         QueryParms param = new QueryParms(PersonEntity.class)
                 .addCriteria(DbCoumns.Person.Name, "John Doe");
         entity = DOBase.selectSingle(PersonEntity.class, param);
+
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                //Speed test
+                long startTime = System.currentTimeMillis();
+                for(int i = 0; i < 10000; i++){
+                    PersonEntity personEntity = new PersonEntity();
+                    personEntity.name = "John Doe" + i;
+                    personEntity.save();
+                }
+                long stopTime = System.currentTimeMillis();
+                Log.i("DbTest", "Insert " + (stopTime - startTime));
+
+
+                startTime = System.currentTimeMillis();
+                List<PersonEntity> persons = DOBase.selectAll(PersonEntity.class, new QueryParms(PersonEntity.class));
+                stopTime = System.currentTimeMillis();
+                Log.i("DbTest", "Select " + (stopTime - startTime));
+
+                startTime = System.currentTimeMillis();
+                for(int i = 0; i < persons.size(); i++){
+                    persons.get(i).delete();
+                }
+                stopTime = System.currentTimeMillis();
+                Log.i("DbTest", "Delete " + (stopTime - startTime));
+            }
+        };
+
+        thread.start();
     }
 }
