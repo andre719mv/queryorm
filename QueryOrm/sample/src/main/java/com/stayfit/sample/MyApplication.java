@@ -46,7 +46,8 @@ public class MyApplication extends Application {
                 long startTime = System.currentTimeMillis();
                 for(int i = 0; i < 10000; i++){
                     PersonEntity personEntity = new PersonEntity();
-                    personEntity.name = "John Doe" + i;
+                    personEntity.name = "John" + i;
+                    personEntity.lastName = "Doe" + i;
                     personEntity.save();
                 }
                 long stopTime = System.currentTimeMillis();

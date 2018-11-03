@@ -19,6 +19,8 @@ public class PersonEntity extends DOBase {
 
     @MapColumn(DbCoumns.Person.Name)
     public String name;
+    @MapColumn(DbCoumns.Person.LastName)
+    public String lastName;
     @MapColumn(DbCoumns.Person.Age)
     public int age;
 }

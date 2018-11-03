@@ -5,7 +5,7 @@ import com.stayfit.queryorm.lib.android.AndroidSQLiteDatabaseHelper;
 import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
 
 public class AppDb extends AndroidSQLiteDatabaseHelper {
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "database.db";
 
     public AppDb(Context context) {
@@ -22,6 +22,10 @@ public class AppDb extends AndroidSQLiteDatabaseHelper {
         if (oldVersion < 2) {
             db.execSQL(CreateTableScriptsOld.Person1);
             db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s INTEGER DEFAULT 0", Tables.Person, DbCoumns.Person.Age));
+        }
+
+        if (oldVersion < 3) {
+            db.execSQL(String.format("ALTER TABLE %s ADD COLUMN %s TEXT", Tables.Person, DbCoumns.Person.LastName));
         }
 
         onCreate(db);
