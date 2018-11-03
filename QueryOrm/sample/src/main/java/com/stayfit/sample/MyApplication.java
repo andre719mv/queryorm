@@ -2,12 +2,14 @@ package com.stayfit.sample;
 
 import android.app.Application;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.stayfit.queryorm.lib.DOBase;
 import com.stayfit.queryorm.lib.DbHelper;
 import com.stayfit.queryorm.lib.QueryParms;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
 import com.stayfit.sample.dal.AppDb;
 import com.stayfit.sample.dal.DbCoumns;
 import com.stayfit.sample.dal.entities.PersonEntity;
@@ -44,15 +46,20 @@ public class MyApplication extends Application {
             public void run() {
                 //Speed test
                 long startTime = System.currentTimeMillis();
-                for(int i = 0; i < 10000; i++){
+                ISQLiteDatabase db = DbHelper.getHelper().getWritableDatabase();
+
+                db.beginTransaction();
+
+                for (int i = 0; i < 10000; i++) {
                     PersonEntity personEntity = new PersonEntity();
                     personEntity.name = "John" + i;
                     personEntity.lastName = "Doe" + i;
                     personEntity.save();
                 }
+
+                db.commitTransaction();
                 long stopTime = System.currentTimeMillis();
                 Log.i("DbTest", "Insert " + (stopTime - startTime));
-
 
                 startTime = System.currentTimeMillis();
                 List<PersonEntity> persons = DOBase.selectAll(PersonEntity.class, new QueryParms(PersonEntity.class));
@@ -60,11 +67,12 @@ public class MyApplication extends Application {
                 Log.i("DbTest", "Select " + (stopTime - startTime));
 
                 startTime = System.currentTimeMillis();
-                for(int i = 0; i < persons.size(); i++){
+                for (int i = 0; i < persons.size(); i++) {
                     persons.get(i).delete();
                 }
                 stopTime = System.currentTimeMillis();
                 Log.i("DbTest", "Delete " + (stopTime - startTime));
+
             }
         };
 

@@ -14,7 +14,7 @@ import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
  * Created by Администратор on 3/21/2018.
  */
 
-public class AndroidSQLiteDatabase implements ISQLiteDatabase {
+public class AndroidSQLiteDatabase extends ISQLiteDatabase {
     private SQLiteDatabase db;
 
     public AndroidSQLiteDatabase(SQLiteDatabase db) {
