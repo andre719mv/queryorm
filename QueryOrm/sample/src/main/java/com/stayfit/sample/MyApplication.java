@@ -9,6 +9,7 @@ import android.util.Log;
 import com.stayfit.queryorm.lib.DOBase;
 import com.stayfit.queryorm.lib.DbHelper;
 import com.stayfit.queryorm.lib.QueryParms;
+import com.stayfit.queryorm.lib.SqlExecutor;
 import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
 import com.stayfit.sample.dal.AppDb;
 import com.stayfit.sample.dal.DbCoumns;
@@ -77,5 +78,10 @@ public class MyApplication extends Application {
         };
 
         thread.start();
+
+        SqlExecutor executor = new SqlExecutor();
+        SmartSqlQuery query = new SmartSqlQuery();
+        executor.executeSelect(PersonEntity.class, query);
+
     }
 }

@@ -27,12 +27,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':queryorm')
     implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.github.andre719mv:queryorm-base:1.0.3'
-    //implementation 'com.github.andre719mv:queryorm-base:master-SNAPSHOT'
+    //implementation 'com.github.andre719mv:queryorm-base:1.0.3'
+    implementation 'com.github.andre719mv:queryorm-base:master-SNAPSHOT'
 }
 
 
  // to refresh snapshot
-//configurations.all {
-//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-//}
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
