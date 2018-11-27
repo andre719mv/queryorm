@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 28
     }
 
     compileOptions {
@@ -17,8 +17,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //implementation 'com.github.andre719mv:queryorm-base:1.0.3'
-    implementation 'com.github.andre719mv:queryorm-base:master-SNAPSHOT'
+    implementation 'com.github.andre719mv:queryorm-base:1.0.4'
+    //implementation 'com.github.andre719mv:queryorm-base:master-SNAPSHOT'
 }
 
 // to refresh snapshot
