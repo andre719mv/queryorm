@@ -5,4 +5,5 @@ package com.stayfit.sample.dal;
  */
 public class Tables {
     public static final String Person = "person";
+    public static final String Exercise = "exercise";
 }

@@ -11,9 +11,13 @@ import com.stayfit.queryorm.lib.DbHelper;
 import com.stayfit.queryorm.lib.QueryParms;
 import com.stayfit.queryorm.lib.SmartSqlQuery;
 import com.stayfit.queryorm.lib.SqlExecutor;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteContentValues;
 import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
+import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabaseHelper;
 import com.stayfit.sample.dal.AppDb;
 import com.stayfit.sample.dal.DbCoumns;
+import com.stayfit.sample.dal.Tables;
+import com.stayfit.sample.dal.entities.Exercise;
 import com.stayfit.sample.dal.entities.PersonEntity;
 
 import java.util.List;
@@ -50,6 +54,8 @@ public class MyApplication extends Application {
                 long startTime = System.currentTimeMillis();
                 ISQLiteDatabase db = DbHelper.getHelper().getWritableDatabase();
 
+                testExercise(db);
+
                 db.beginTransaction();
 
                 for (int i = 0; i < 10000; i++) {
@@ -84,5 +90,59 @@ public class MyApplication extends Application {
         //SmartSqlQuery query = new SmartSqlQuery();
         //executor.executeSelect(PersonEntity.class, query);
 
+    }
+
+    private void testExercise(ISQLiteDatabase db) {
+        long externalId = 36;
+        db.execSQL("delete from " + Tables.Exercise);
+
+        Exercise model = new Exercise();
+        model.unit_type = 1;
+        model.id_external = externalId;
+        model.mainMuscle = 2;
+        model.otherMuscles = 2;
+        model.weight = 2;
+        model.version = 2;
+        model.category = 2;
+        model.equipment = 2;
+        model.mechanicsType = 2;
+        model.level = 2;
+        model.rating = 36.4F;
+        model.imagesCount = 0;
+        model.IsDeleted = false;
+
+        ISQLiteContentValues values = db.newContentValues();
+        values.put(DbCoumns.Exercise.UnitType, model.unit_type);
+        values.put(DbCoumns.Exercise.IdExternal, model.id_external);
+        values.put(DbCoumns.Exercise.MainMuscle, model.mainMuscle);
+        values.put(DbCoumns.Exercise.OtherMuscles, model.otherMuscles);
+        values.put(DbCoumns.Exercise.Weight, model.weight);
+        values.put(DbCoumns.Exercise.Version, model.version);
+        values.put(DbCoumns.Exercise.Category, model.category);
+        values.put(DbCoumns.Exercise.Equipment, model.equipment);
+        values.put(DbCoumns.Exercise.MechanicsType, model.mechanicsType);
+        values.put(DbCoumns.Exercise.Level, model.level);
+        values.put(DbCoumns.Exercise.Rating, model.rating);
+        values.put(DbCoumns.Exercise.ImagesCount, model.imagesCount);
+        values.put(DbCoumns.Exercise.IsDeleted, model.IsDeleted);
+        values.put(DbCoumns.Exercise.IdUser, 0);
+
+        db.insert(Tables.Exercise, DbCoumns.Exercise.IdExternal, values);
+        List<Exercise> exercises = DOBase.selectAll(Exercise.class, new QueryParms(Exercise.class).withDeleted());
+        Exercise ex2 = DOBase.selectByColumnVal(Exercise.class, DbCoumns.Exercise.IdExternal,externalId);
+
+        values.put(DbCoumns.Exercise.IsDeleted, true);
+        values.put(DbCoumns.Exercise.Rating, 4.5F);
+
+        String[] whereArgs = new String[]{String.valueOf(model.id_external)};
+        db.update(Tables.Exercise, values, DbCoumns.Exercise.IdExternal + " = ?", whereArgs);
+
+        exercises = DOBase.selectAll(Exercise.class, new QueryParms(Exercise.class).withDeleted());
+        ex2 = DOBase.selectByColumnVal(Exercise.class, DbCoumns.Exercise.IdExternal, externalId);
+
+        db.execSQL("delete from " + Tables.Exercise);
+
+        if(ex2 != null || exercises.size() != 1)
+            throw  new RuntimeException();
     }
 }

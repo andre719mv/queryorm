@@ -15,6 +15,7 @@ public class AppDb extends AndroidSQLiteDatabaseHelper {
     @Override
     public void onCreate(ISQLiteDatabase db) {
         db.execSQL(CreateTableScripts.Person);
+        db.execSQL(CreateTableScripts.Exercise);
     }
 
     @Override

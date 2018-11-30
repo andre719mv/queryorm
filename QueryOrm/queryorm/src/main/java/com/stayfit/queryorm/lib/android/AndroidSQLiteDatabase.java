@@ -6,9 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 
+import com.stayfit.queryorm.lib.TypeConverter;
 import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteContentValues;
 import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteCursor;
 import com.stayfit.queryorm.lib.sqlinterfaces.ISQLiteDatabase;
+
+import java.util.Date;
 
 /**
  * Created by Администратор on 3/21/2018.
@@ -99,6 +102,19 @@ public class AndroidSQLiteDatabase extends ISQLiteDatabase {
                 stmt.bindLong(idx, (Integer) bind);
             } else if (bind instanceof Long) {
                 stmt.bindLong(idx, (Long) bind);
+            } else if (bind instanceof Double) {
+                stmt.bindDouble(idx, (Double) bind);
+            } else if (bind instanceof Float) {
+                stmt.bindDouble(idx, (Float) bind);
+            } else if (bind instanceof Boolean) {
+                stmt.bindDouble(idx, (Boolean) bind ? 1 : 0);
+            }else if (bind instanceof Date) {
+                String value = new TypeConverter().writeDateTime((Date)bind);
+                stmt.bindString(idx, value);
+            } else if(bind == null) {
+                stmt.bindNull(idx);
+            }else{
+                throw new IllegalArgumentException("Unexpected field type " + bind.getClass().getName());
             }
         }
         stmt.executeUpdateDelete();
