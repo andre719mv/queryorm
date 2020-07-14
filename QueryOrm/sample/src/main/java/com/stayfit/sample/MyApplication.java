@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.stayfit.queryorm.lib.CommonFields;
 import com.stayfit.queryorm.lib.DOBase;
 import com.stayfit.queryorm.lib.DbHelper;
 import com.stayfit.queryorm.lib.QueryParms;
@@ -51,35 +52,11 @@ public class MyApplication extends Application {
             @Override
             public void run() {
                 //Speed test
-                long startTime = System.currentTimeMillis();
                 ISQLiteDatabase db = DbHelper.getHelper().getWritableDatabase();
 
-                testExercise(db);
-
-                db.beginTransaction();
-
-                for (int i = 0; i < 10000; i++) {
-                    PersonEntity personEntity = new PersonEntity();
-                    personEntity.name = "John" + i;
-                    personEntity.lastName = "Doe" + i;
-                    personEntity.save();
-                }
-
-                db.commitTransaction();
-                long stopTime = System.currentTimeMillis();
-                Log.i("DbTest", "Insert " + (stopTime - startTime));
-
-                startTime = System.currentTimeMillis();
-                List<PersonEntity> persons = DOBase.selectAll(PersonEntity.class, new QueryParms(PersonEntity.class));
-                stopTime = System.currentTimeMillis();
-                Log.i("DbTest", "Select " + (stopTime - startTime));
-
-                startTime = System.currentTimeMillis();
-                for (int i = 0; i < persons.size(); i++) {
-                    persons.get(i).delete();
-                }
-                stopTime = System.currentTimeMillis();
-                Log.i("DbTest", "Delete " + (stopTime - startTime));
+                //testExercise(db);
+                //speedTest(db);
+                testIsDeleted();
 
             }
         };
@@ -90,6 +67,61 @@ public class MyApplication extends Application {
         //SmartSqlQuery query = new SmartSqlQuery();
         //executor.executeSelect(PersonEntity.class, query);
 
+    }
+
+    private void testIsDeleted() {
+        Exercise ex = new Exercise();
+        ex.name = "test";
+        ex.IsDeleted = true;
+        ex.save();
+
+        Long id = ex._id;
+
+        QueryParms parms = new QueryParms(Exercise.class)
+                .addCriteria(CommonFields.Id, id);
+        ex = DOBase.selectSingle(Exercise.class, parms);
+        if(ex != null)
+            throw new RuntimeException("Failed");
+
+        ex = DOBase.selectById(Exercise.class, id);
+        if(ex == null)
+            throw new RuntimeException("Failed");
+
+        parms = new QueryParms(Exercise.class)
+                .addCriteria(CommonFields.Id, id)
+                .withDeleted();
+        ex = DOBase.selectSingle(Exercise.class, parms);
+        if(ex == null)
+            throw new RuntimeException("Failed");
+    }
+
+    private void speedTest(ISQLiteDatabase db) {
+        long startTime = System.currentTimeMillis();
+        db.beginTransaction();
+
+        for (int i = 0; i < 10000; i++) {
+            PersonEntity personEntity = new PersonEntity();
+            personEntity.name = "John" + i;
+            personEntity.lastName = "Doe" + i;
+            personEntity.save();
+        }
+
+        long stopTime = System.currentTimeMillis();
+        Log.i("DbTest", "Insert " + (stopTime - startTime));
+
+        startTime = System.currentTimeMillis();
+        List<PersonEntity> persons = DOBase.selectAll(PersonEntity.class, new QueryParms(PersonEntity.class));
+        stopTime = System.currentTimeMillis();
+        Log.i("DbTest", "Select " + (stopTime - startTime));
+
+        startTime = System.currentTimeMillis();
+        for (int i = 0; i < persons.size(); i++) {
+            persons.get(i).delete();
+        }
+
+        db.commitTransaction();
+        stopTime = System.currentTimeMillis();
+        Log.i("DbTest", "Delete " + (stopTime - startTime));
     }
 
     private void testExercise(ISQLiteDatabase db) {
